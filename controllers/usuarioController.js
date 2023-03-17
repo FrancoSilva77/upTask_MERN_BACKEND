@@ -36,6 +36,18 @@ const autenticar = async (req, res) => {
     const error = new Error("Tu cuenta no ha sido Confirmada");
     return res.status(404).json({ msg: error.message });
   }
+
+  // Comparar Password
+  if (await usuario.comprobarPassword(password)) {
+    res.json({
+      _id: usuario._id,
+      nombre: usuario.nombre,
+      email: usuario.email,
+    });
+  } else {
+    const error = new Error("El password es incorrecto");
+    return res.status(404).json({ msg: error.message });
+  }
 };
 
 export { registrar, autenticar };
