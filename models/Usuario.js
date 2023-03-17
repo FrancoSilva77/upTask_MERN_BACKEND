@@ -33,7 +33,7 @@ const usuarioSchema = mongoose.Schema(
 );
 
 usuarioSchema.pre("save", async function (next) {
-  if(!this.isModifed('password')) {
+  if(!this.isModified('password')) {
     next();
   }
   const salt = await bcrypt.genSalt(10);
