@@ -121,9 +121,12 @@ const nuevoPassword = async (req, res) => {
     const error = new Error("Token no Válido");
     return res.status(404).json({ msg: error.message });
   }
+};
 
-  console.log(token);
-  console.log(password);
+const perfil = async (req, res) => {
+  const { usuario } = req;
+
+  res.json(usuario);
 };
 
 export {
@@ -133,4 +136,5 @@ export {
   olvidePassword,
   comprobarToken,
   nuevoPassword,
+  perfil,
 };
