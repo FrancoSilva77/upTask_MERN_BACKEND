@@ -17,7 +17,22 @@ const nuevoProyecto = async (req, res) => {
   }
 };
 
-const obtenerProyecto = async (req, res) => {};
+const obtenerProyecto = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const proyecto = await Proyecto.findById(id);
+
+    if (proyecto.creador.toString() !== req.usuario._id.toString()) {
+      const error = new Error("Acción No Válida");
+      return res.status(400).json({ msg: error.message });
+    }
+
+    res.json(proyecto);
+  } catch (error) {
+    return res.status(404).json({ msg: "El id que ingresaste no es valido" });
+  }
+};
 
 const editarProyecto = async (req, res) => {};
 
