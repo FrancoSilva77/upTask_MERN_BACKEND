@@ -63,7 +63,29 @@ const editarProyecto = async (req, res) => {
   }
 };
 
-const eliminarProyecto = async (req, res) => {};
+const eliminarProyecto = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const proyecto = await Proyecto.findById(id);
+
+    if (proyecto.creador.toString() !== req.usuario._id.toString()) {
+      const error = new Error("Acción No Válida");
+      return res.status(400).json({ msg: error.message });
+    }
+
+    // Eliminar proyecto
+    try {
+      await proyecto.deleteOne();
+      res.json({msg: "Proyecto eliminado"})
+    } catch (error) {
+      console.log(error);
+    }
+
+  } catch (error) {
+    return res.status(404).json({ msg: "El id que ingresaste no es valido" });
+  }
+};
 
 const agregarColaborador = async (req, res) => {};
 
