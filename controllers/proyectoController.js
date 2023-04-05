@@ -34,7 +34,34 @@ const obtenerProyecto = async (req, res) => {
   }
 };
 
-const editarProyecto = async (req, res) => {};
+const editarProyecto = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const proyecto = await Proyecto.findById(id);
+
+    if (proyecto.creador.toString() !== req.usuario._id.toString()) {
+      const error = new Error("Acción No Válida");
+      return res.status(400).json({ msg: error.message });
+    }
+
+    // Actualización de proyecto
+    proyecto.nombre = req.body.nombre || proyecto.nombre;
+    proyecto.descripcion = req.body.descripcion || proyecto.descripcion;
+    proyecto.fechaEntrega = req.body.fechaEntrega || proyecto.fechaEntrega;
+    proyecto.cliente = req.body.cliente || proyecto.cliente;
+
+    try {
+      const proyectoAlmacenado = await proyecto.save();
+      res.json(proyectoAlmacenado);
+    } catch (error) {
+      console.log(error);
+    }
+
+  } catch (error) {
+    return res.status(404).json({ msg: "El id que ingresaste no es valido" });
+  }
+};
 
 const eliminarProyecto = async (req, res) => {};
 
