@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import conectarDB from "./config/db.js";
 import usuarioRoutes from "./routes/UsuarioRoutes.js";
 import proyectoRoutes from "./routes/ProyectoRoutes.js";
+import tareaRoutes from "./routes/TareaRoutes.js";
 
 const app = express();
 app.use(express.json());
@@ -14,6 +15,7 @@ conectarDB();
 // Routing
 app.use("/api/usuarios", usuarioRoutes);
 app.use("/api/proyectos", proyectoRoutes);
+app.use("/api/tareas", tareaRoutes);
 
 const PORT = process.env.PORT || 4000;
 
