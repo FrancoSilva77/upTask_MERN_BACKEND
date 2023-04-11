@@ -1,4 +1,5 @@
 import Proyecto from "../models/Proyecto.js";
+import Tarea from "../models/Tarea.js";
 
 const obtenerProyectos = async (req, res) => {
   const proyectos = await Proyecto.find().where("creador").equals(req.usuario);
@@ -28,7 +29,13 @@ const obtenerProyecto = async (req, res) => {
       return res.status(400).json({ msg: error.message });
     }
 
-    res.json(proyecto);
+    // Obtener las tareas del proyecto
+    const tareas = await Tarea.find().where("proyecto").equals(proyecto._id);
+
+    res.json({
+      proyecto,
+      tareas
+    });
   } catch (error) {
     return res.status(404).json({ msg: "El id que ingresaste no es valido" });
   }
@@ -57,7 +64,6 @@ const editarProyecto = async (req, res) => {
     } catch (error) {
       console.log(error);
     }
-
   } catch (error) {
     return res.status(404).json({ msg: "El id que ingresaste no es valido" });
   }
@@ -77,11 +83,10 @@ const eliminarProyecto = async (req, res) => {
     // Eliminar proyecto
     try {
       await proyecto.deleteOne();
-      res.json({msg: "Proyecto eliminado"})
+      res.json({ msg: "Proyecto eliminado" });
     } catch (error) {
       console.log(error);
     }
-
   } catch (error) {
     return res.status(404).json({ msg: "El id que ingresaste no es valido" });
   }
@@ -91,8 +96,6 @@ const agregarColaborador = async (req, res) => {};
 
 const eliminarColaborador = async (req, res) => {};
 
-const obtenerTareas = async (req, res) => {};
-
 export {
   obtenerProyectos,
   nuevoProyecto,
@@ -101,5 +104,4 @@ export {
   eliminarProyecto,
   agregarColaborador,
   eliminarColaborador,
-  obtenerTareas,
 };
