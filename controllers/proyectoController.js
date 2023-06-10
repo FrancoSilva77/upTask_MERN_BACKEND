@@ -29,13 +29,7 @@ const obtenerProyecto = async (req, res) => {
       return res.status(400).json({ msg: error.message });
     }
 
-    // Obtener las tareas del proyecto
-    const tareas = await Tarea.find().where("proyecto").equals(proyecto._id);
-
-    res.json({
-      proyecto,
-      tareas
-    });
+    res.json(proyecto);
   } catch (error) {
     return res.status(404).json({ msg: "El id que ingresaste no es valido" });
   }
