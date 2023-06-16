@@ -2,10 +2,12 @@ import Proyecto from "../models/Proyecto.js";
 import Usuario from "../models/Usuario.js";
 
 const obtenerProyectos = async (req, res) => {
-  const proyectos = await Proyecto.find()
-    .where("creador")
-    .equals(req.usuario)
-    .select("-tareas");
+  const proyectos = await Proyecto.find({
+    $or: [
+      { colaboradores: { $in: req.usuario } },
+      { creador: { $in: req.usuario } },
+    ],
+  }).select("-tareas");
   res.json(proyectos);
 };
 
@@ -26,10 +28,19 @@ const obtenerProyecto = async (req, res) => {
 
   try {
     const proyecto = await Proyecto.findById(id)
-      .populate("tareas")
+      .populate({
+        path: "tareas",
+        populate: { path: "completado", select: "nombre" },
+      })
       .populate("colaboradores", "nombre email");
 
-    if (proyecto.creador.toString() !== req.usuario._id.toString()) {
+    if (
+      proyecto.creador.toString() !== req.usuario._id.toString() &&
+      !proyecto.colaboradores.some(
+        (colaborador) =>
+          colaborador._id.toString() === req.usuario._id.toString()
+      )
+    ) {
       const error = new Error("Acción No Válida");
       return res.status(400).json({ msg: error.message });
     }
